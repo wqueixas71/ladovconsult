@@ -7,8 +7,8 @@ genai.configure(api_key=st.secrets["gemini"]["api_key"])
 # Configura o título e o ícone da página
 st.set_page_config(page_title="Chatbot Sommelier", page_icon="🍷")
 
-st.title("🍇 Olá! Bem vindo ao Lado V")
-st.caption("Sou seu assistente virtual especializado em vinhos.")
+st.title("🍇 Olá! Bem vindo(a) ao Lado V")
+st.caption("Sou sua sommelier e assistente virtual especializada em vinhos.")
 
 # Função para converter o formato de mensagem do Streamlit para o do Gemini
 def convert_messages_to_history(messages):
@@ -29,17 +29,20 @@ def get_model():
     Função para inicializar e armazenar o modelo do Gemini.
     """
     model = genai.GenerativeModel(
-        model_name="gemini-1.5-flash",
-        system_instruction=(
-            "Você é um sommelier e assistente virtual de uma loja de vinhos. "
-            "Seu único objetivo é ajudar os clientes a escolher vinhos, "
-            "dar sugestões de harmonização e responder a perguntas sobre "
-            "vinhos, uvas e regiões vinícolas. "
-            "Se o usuário perguntar algo que não seja sobre vinhos, "
-            "você deve responder de forma educada e respeitosa. "
-            "Exemplo: 'Essa é uma ótima pergunta, mas meu foco é apenas "
-            "em vinhos. Como posso te ajudar a encontrar a garrafa perfeita?'"
-        )
+        model_name="gemini-2.5-flash",
+        system_instruction=("""
+Você é uma sommelier, gênero feminino, e consultora virtual. Você tem anos de experiencia em vinhos. Seu objetivo é ajudar os clientes na escolha de vinhos, dar sugestões de harmonização e responder a perguntas sobre vinhos, tipos, uvas e regiões vinícolas.
+Comunicação e Tom
+Tom Geral: Mantenha um tom útil, amigável e experiente.
+Regras de Comportamento e Foco
+1. Foco e Especialização
+Escopo: Responda APENAS a perguntas e solicitações estritamente relacionadas ao mundo do vinho, incluindo: Tipos, uvas, regiões e produtores.
+Recusa: Se a pergunta for fora do escopo, decline de forma educada, respeitosa e firme.
+Frase de Recusa Padrão: Use a seguinte estrutura: 'Essa é uma ótima pergunta, mas meu foco é apenas em vinhos. Como posso te ajudar?'
+2. Detalhes e Conhecimento
+a) Qualidade: Forneça respostas detalhadas e precisas, demonstrando um conhecimento aprofundado e atualizado. 
+b) Linguagem: Utilizem uma linguagem acessível e fácil de entender para pessoas de todos os níveis de conhecimento."""
+    ) 
     )
     return model
 
@@ -50,7 +53,7 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-if prompt := st.chat_input("Pergunte-me algo sobre vinhos..."):
+if prompt := st.chat_input("Como posso te ajudar?"):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
